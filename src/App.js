@@ -23,19 +23,24 @@ const initialFriends = [
 
 
 export default function App() {
+  const [friends, setFriends] = useState(initialFriends);
   const [showAddFriend, setShowAddFriend] = useState(false);
 
   function handleAddFriend(){
     setShowAddFriend((show) => !show);
   }
 
+  function handleAdd(friend) {
+    setFriends((friends) => [...friends, friend])
+    setShowAddFriend(false);
+  }
 
 
   return(
     <div className="app">
       <div className="sidebar">
-        <FriendsList />
-        { showAddFriend && <FormAddFriend /> }
+        <FriendsList friends={friends} />
+        { showAddFriend && <FormAddFriend onAddFriend={handleAdd} /> }
         <Button onClickAdd={handleAddFriend}>{ showAddFriend ? "Close" : "Add Friend" }</Button>
       </div>
       <FormSplitBill />
@@ -49,8 +54,8 @@ function Button({ children, onClickAdd }) {
   )
 }
 
-function FriendsList() {
-const friends = initialFriends;
+function FriendsList({ friends }) {
+
 
   return(
     <ul>
@@ -74,14 +79,44 @@ function Friend({ friend }) {
   )
 }
 
-function FormAddFriend() {
+function FormAddFriend({ onAddFriend }) {
+
+  const [name, setName] = useState("");
+  const [profileImg, setProfileImg] = useState("");
+
+  function handleName(e) {
+    setName(e.target.value)
+  }
+
+  function handleImage(e) {
+    setProfileImg(e.target.value) 
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if(!name || !profileImg) return;
+
+    const id = crypto.randomUUID;
+
+    const newFriend = {
+      id,
+      name,
+      profileImg: `${profileImg}=${id}`,
+      balance: 0,
+    }
+    onAddFriend(newFriend);
+  }
+
+
+
   return (
-    <form>
+    <form className="form-add-friend" onSubmit={handleSubmit}>
       <label>Friends Name</label>
-      <input type="text"/>
+      <input type="text" value={name} onChange={handleName}/>
 
       <label>Image Url</label>
-      <input type="text"/>
+      <input type="text" value={profileImg} onChange={handleImage}/>
 
       <Button>Add</Button>
     </form>
@@ -89,6 +124,7 @@ function FormAddFriend() {
 };
 
 function FormSplitBill({ friendsName }){
+
   return(
     <form className="form-split-bill">
       <h2>Split a bill with {friendsName}</h2>
@@ -104,8 +140,8 @@ function FormSplitBill({ friendsName }){
 
       <label>Who's paying?</label>
       <select>
-        <option value={user}>You</option>
-        <option value={friend}>Friend</option>
+        <option value={"user"}>You</option>
+        <option value={"friend"}>Friend</option>
       </select>
 
       <Button>Split Bill</Button>
