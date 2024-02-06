@@ -26,6 +26,8 @@ export default function App() {
   const [friends, setFriends] = useState(initialFriends);
   const [showAddFriend, setShowAddFriend] = useState(false);
 
+  const [selectFriendBill, setSelectFriendBill] = useState("");
+
   function handleAddFriend(){
     setShowAddFriend((show) => !show);
   }
@@ -35,15 +37,18 @@ export default function App() {
     setShowAddFriend(false);
   }
 
+  function handleFriendBill(friend){
+    setSelectFriendBill(friend)
+  };
 
   return(
     <div className="app">
       <div className="sidebar">
-        <FriendsList friends={friends} />
+        <FriendsList friends={friends} onSelectFriend={handleFriendBill}/>
         { showAddFriend && <FormAddFriend onAddFriend={handleAdd} /> }
         <Button onClickAdd={handleAddFriend}>{ showAddFriend ? "Close" : "Add Friend" }</Button>
       </div>
-      <FormSplitBill />
+      {selectFriendBill && <FormSplitBill />}
     </div>
   )
 };
@@ -54,19 +59,19 @@ function Button({ children, onClickAdd }) {
   )
 }
 
-function FriendsList({ friends }) {
+function FriendsList({ friends,onSelectFriend }) {
 
 
   return(
     <ul>
       {friends.map((friend) => (
-        <Friend friend={friend} key={friend.id}/>
+        <Friend friend={friend} key={friend.id} onSelectFriend={onSelectFriend}/>
       ))}
     </ul>
   )
 };
 
-function Friend({ friend }) {
+function Friend({ friend, onSelectFriend }) {
   return(
     <li>
       <image src={friend.image} alt={friend.name}/>
@@ -74,7 +79,7 @@ function Friend({ friend }) {
       {friend.balance < 0 && (<p className="red">You owe {friend.name} {Math.abs(friend.balance)}$</p>)}
       {friend.balance > 0 && (<p className="green">{friend.name} owes you {Math.abs(friend.balance)}$</p>)}
       {friend.balance === 0 && (<p className="red">You and {friend.name} {Math.abs(friend.balance)}$</p>)}
-      <Button>Select</Button>
+      <Button onClick={() => onSelectFriend(friend)}>Select</Button>
     </li>
   )
 }
