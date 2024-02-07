@@ -38,7 +38,8 @@ export default function App() {
   }
 
   function handleFriendBill(friend){
-    setSelectFriendBill(friend)
+    setSelectFriendBill((cur) => (cur?.id === friend.id ? null : "friend"));
+    setShowAddFriend(false);
   };
 
   return(
@@ -72,7 +73,7 @@ function FriendsList({ friends, onSelectFriend, activeFriend }) {
 };
 
 function Friend({ friend, onSelectFriend, activeFriend }) {
-  const activeSelected = activeFriend.id === friend.id;
+  const activeSelected = activeFriend?.id === friend.id;
 
   return(
     <li className={ activeSelected ? "selected" : ""}>
@@ -81,7 +82,7 @@ function Friend({ friend, onSelectFriend, activeFriend }) {
       {friend.balance < 0 && (<p className="red">You owe {friend.name} {Math.abs(friend.balance)}$</p>)}
       {friend.balance > 0 && (<p className="green">{friend.name} owes you {Math.abs(friend.balance)}$</p>)}
       {friend.balance === 0 && (<p className="red">You and {friend.name} {Math.abs(friend.balance)}$</p>)}
-      <Button onClick={() => onSelectFriend(friend)}>Select</Button>
+      <Button onClick={() => onSelectFriend(friend)}>{activeFriend ? "Close" : "Select"}</Button>
     </li>
   )
 }
