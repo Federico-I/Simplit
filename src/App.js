@@ -111,12 +111,12 @@ function FormAddFriend({ onAddFriend }) {
 
     if(!name || !profileImg) return;
 
-    const id = crypto.randomUUID;
+    const newId = crypto.randomUUID;
 
     const newFriend = {
-      id,
-      name,
-      profileImg: `${profileImg}=${id}`,
+      id: `${newId}`,
+      name: `${name}`,
+      image: `${profileImg}=${newId}`,
       balance: 0,
     }
     onAddFriend(newFriend);
