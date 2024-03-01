@@ -32,8 +32,8 @@ export default function App() {
     setShowAddFriend((show) => !show);
   };
 
-  function handleAdd(friend) {
-    setFriends((friends) => [...friends, friend])
+  function handleAdd(newFriend) {
+    setFriends((friends) => [...friends, newFriend])
     setShowAddFriend(false);
   };
 
@@ -67,7 +67,6 @@ function Button({ children, onClickAdd }) {
 }
 
 function FriendsList({ friends, onSelectFriend, activeFriend }) {
-
 
   return(
     <ul>
